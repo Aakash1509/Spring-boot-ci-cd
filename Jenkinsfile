@@ -1,9 +1,16 @@
 pipeline {
     agent any
 
+    parameters {
+        string(name: 'IMAGE_NAME', defaultValue: 'todo-app', description: 'Docker image name')
+        string(name: 'CONTAINER_NAME', defaultValue: 'todo-app-container', description: 'Docker container name')
+        string(name: 'APP_PORT', defaultValue: '8081', description: 'Host port to expose the app')
+    }
+
     environment {
-        IMAGE_NAME = "todo-app"
-        CONTAINER_NAME = "todo-app-container"
+        IMAGE_NAME = "${params.IMAGE_NAME}"
+        CONTAINER_NAME = "${params.CONTAINER_NAME}"
+        APP_PORT = "${params.APP_PORT}"
     }
 
     stages {
@@ -37,7 +44,7 @@ pipeline {
 
         stage('Run Docker Container') {
             steps {
-                sh "docker run -d --name ${CONTAINER_NAME} -p 8081:8080 ${IMAGE_NAME}"
+                sh "docker run -d --name ${CONTAINER_NAME} -p ${APP_PORT}:8080 ${IMAGE_NAME}"
             }
         }
     }
